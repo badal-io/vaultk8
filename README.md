@@ -46,7 +46,7 @@ Once the program finished it writes out **secrets.conf** to the folder specified
 
 This program should be used in init container specifically to source secrets before launching app. Steps for ideal scenario:
 1. generate secrets in init container
-2. safe secrets to a shared mount
+2. sace secrets to a shared mount
 3. App loads in normal lifecycle and sources secrets (environmnent variables)
 
 Currently, app only supports pulling secrets from KV (v2) backend. Sample of how to run program
@@ -54,5 +54,7 @@ Currently, app only supports pulling secrets from KV (v2) backend. Sample of how
 ```sh
 python3 app/vaultk8.py --vault-address https:/vault.test.com --g /muvaki --k8-role qa-app --k8-auth-mount-point qa kv qa/app
 ```
+
+The generated secrets are stored as secrets.conf and start with 'export key=value' format in order to make sourcing straight forward. Value is also single quoted.
 
 **note**: if you are going to run it with docker, you will have to mount your local diretory where the k8.yaml config is sitting in order for the configs to be readable. In example above, /muvaki would be volume mounted.

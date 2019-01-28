@@ -94,7 +94,7 @@ def writeEnvConfig(secret_dir, data):
     # Generates the secrets in key=value format
     fh = open(secret_dir + "/secrets.conf", "w")
     for k, v in data.items():
-        fh.write(k.strip()+'='+'\''+v.strip()+'\'\n')
+        fh.write('export ' + k.strip()+'='+'\''+v.strip()+'\'\n')
 
 def kv(args):
     # authenticating against vault
