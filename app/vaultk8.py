@@ -73,6 +73,10 @@ def _parse_argument():
         type=str,
         help='Secrets Path in KV backend to pull all the secrets from'
     )
+    parser.add_argument(
+        '--export',
+        action='store_true',
+        help='Set config with export followed by key=value')
     kv_parser.set_defaults(func=kv)
 
     return parser.parse_args()
@@ -90,11 +94,14 @@ def vaultAuth(vault_address, tls, mount_point, role):
 
     return client
 
-def writeEnvConfig(secret_dir, data):
+def writeEnvConfig(secret_dir, data, export_setting):
     # Generates the secrets in key=value format
     fh = open(secret_dir + "/secrets.conf", "w")
     for k, v in data.items():
-        fh.write('export ' + k.strip()+'='+'\''+v.strip()+'\'\n')
+        if export_setting:
+            fh.write('export ' + k.strip()+'='+'\''+v.strip()+'\'\n')
+        else:
+            fh.write(k.strip()+'='+'\''+v.strip()+'\'\n')
 
 def kv(args):
     # authenticating against vault
@@ -102,7 +109,7 @@ def kv(args):
     # setting default kv configuration
     secret_version_response = client.secrets.kv.v2.read_secret_version(path=args.secrets_path, mount_point=args.kv_mount_point)
     # write out the secrets
-    writeEnvConfig(args.generated_conf,secret_version_response['data']['data'])
+    writeEnvConfig(args.generated_conf,secret_version_response['data']['data'], args.export)
 
 def main():
     """ Entry point """
