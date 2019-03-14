@@ -73,7 +73,7 @@ def _parse_argument():
         type=str,
         help='Secrets Path in KV backend to pull all the secrets from'
     )
-    parser.add_argument(
+    kv_parser.add_argument(
         '--export',
         action='store_true',
         help='Set config with export followed by key=value')
